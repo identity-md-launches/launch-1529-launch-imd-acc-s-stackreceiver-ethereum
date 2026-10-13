@@ -1,0 +1,14 @@
+{
+  "kind": "evm_contracts",
+  "contracts": [
+    {
+      "contract": "StackReceiver",
+      "constructorArgs": [
+        "0xD34a99Bc0f67aE1bbd63C660e6d0b0dd03E263B7",
+        "0x9Efa934D9fAd4AE28c998a40195646b965a97247",
+        "0x1a44076050125825900e736c501f859c50fE728c"
+      ]
+    }
+  ],
+  "notes": "imd/acc on Ethereum mainnet, third launch: one contract, the StackReceiver, the Ethereum end of imd/acc's multichain route. Cashback paid on other chains (Robinhood Chain first) waits in a RemoteStacker there and is sent to Ethereum through IMD's own LayerZero bridge (IMD is a standard OFT, 6 shared decimals) as a send-and-call: the bridged IMD is minted to this contract and the LayerZero endpoint (0x1a44...728c, eid 30101) then calls lzCompose with the list of traders and amounts, abi.encode(address[], uint256[]). The receiver deposits each amount into the sIMD vault (0x9efa...7247, ERC-4626, owner renounced) for its trader; a deposit the vault refuses pays that trader plain IMD instead; it keeps no IMD after a delivery. It accepts lzCompose only from the endpoint and only for composes the IMD token (0xd34a...63b7) queued, and requires the listed amounts to add up to the IMD that arrived, so whoever sends a message pays out only its own IMD. No owner, admin, pause or upgrade; the constructor makes no external call (the first delivery checks sIMD.asset() == IMD and approves the vault once). The live Stacker (0x0690...f4f0, launch #1409) and ProjectRegistry (0x7f53...7faa, launch #1495) are not redeployed. The RemoteStacker is a later launch on Robinhood Chain, naming this contract's address. Test doubles under test/mocks and test/trial are not deployed."
+}
